@@ -1,14 +1,14 @@
 import './AdminPage.css'
 import Character from './Character';
 import UsernameControls from './UsernameControls';
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useContext, useMemo } from 'react'
 
 const AdminPage = () => {
 
-    const [allCharacters, setAllCharacters] = useState(null);
+    
 
     const setupCharacters = () => {
-        
+        //setAllCharacters(["a", "b", "c"])
     }
 
     useEffect(() => {
@@ -16,9 +16,14 @@ const AdminPage = () => {
     }, [])
 
     return (
-        <div className='AdminPage'>
-            <UsernameControls Characters={allCharacters} />
-        </div>
+        
+            <div className='AdminPage'>
+                <UsernameControls />
+                <Character id={0}/>
+                <Character id={1}/>
+                <Character id={2}/>
+            </div>
+        
     )
 }
 

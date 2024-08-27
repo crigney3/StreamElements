@@ -1,15 +1,17 @@
 import './Character.css'
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect, useContext } from 'react'
+import TwitchControlContext from './TwitchControlContext';
 
 const Character = ({
     id
 }) => {
 
+    const fullCharacterInfo = useContext(TwitchControlContext)[id];
     const [dice, setDice] = useState(new Map());
     const [tokens, setTokens] = useState(0);
     const [health, setHealth] = useState(0);
     const [maxHealth, setMaxHealth] = useState(0);
-    const [username, setUsername] = useState("");
+    const username = fullCharacterInfo.username;
     const [name, setName] = useState("");
     const [charText, setCharText] = useState("");
 
@@ -23,7 +25,7 @@ const Character = ({
         if(username === "") {
             return;
         }
-        const response = await fetch("http://dionysus.headass.house:8000/get-text/" + encodeURIComponent(username) + "?" + "username=" + encodeURIComponent(username));
+        const response = await fetch("http://dionysus.headass.house:8000/get-text/" + encodeURIComponent(username) + "?username=" + encodeURIComponent(username));
         if (!response.ok) {
             console.log("Error encountered");
             return;
@@ -31,19 +33,19 @@ const Character = ({
 
         const json = await response.clone().json();
 
-        console.log(response.json().message)
-        if (json.message == "") {
+        console.log(json)
+        if (json.Message === "") {
             console.log("No text received!")
         } else {
-            setCharText(json.message)
+            setCharText(json.Message)
         }
     }
 
     useEffect(() => {
-        
+        console.log("Starting character with " + id);
+
         const interval = setInterval(() => {
-            setUsername("Yakman333")
-            fetchText()
+            fetchText()   
         }, 3000)
 
         return () => clearInterval(interval)
@@ -77,13 +79,14 @@ const Character = ({
     return (
         <div className='CharacterBox'>
             <img className='CharacterIcon'></img>
+            <p className='UsernameText'>{username}</p>
             <div className='HealthBox'>
                 <img className='HealthIcon'></img>
-                <p className='HealthValue'>{health}</p>
+                <p className='HealthValue'>{fullCharacterInfo.health}</p>
             </div>
             <div className='TokenBox'>
                 <img className='TokenIcon'></img>
-                <p className='TokenValue'>{tokens}</p>
+                <p className='TokenValue'>{fullCharacterInfo.tokens}</p>
             </div>
             <p className='CharacterText'>{charText}</p>
         </div>
