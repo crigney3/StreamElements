@@ -1,19 +1,78 @@
 import './Character.css'
-import useState from 'react'
+import { useState, useEffect, useRef } from 'react'
 
 const Character = ({
     id
 }) => {
 
-    const [dice, setDice] = useState(Map());
+    const [dice, setDice] = useState(new Map());
     const [tokens, setTokens] = useState(0);
     const [health, setHealth] = useState(0);
     const [maxHealth, setMaxHealth] = useState(0);
     const [username, setUsername] = useState("");
     const [name, setName] = useState("");
+    const [charText, setCharText] = useState("");
+
+    //const connection = useRef(null);
 
     // We don't keep the spoken text element here,
     // because that's from the TTS server
+    // or maybe it should because it's easier to change the username
+
+    async function fetchText() {
+        if(username === "") {
+            return;
+        }
+        const response = await fetch("http://dionysus.headass.house:8000/get-text/" + encodeURIComponent(username) + "?" + "username=" + encodeURIComponent(username));
+        if (!response.ok) {
+            console.log("Error encountered");
+            return;
+        }
+
+        const json = await response.clone().json();
+
+        console.log(response.json().message)
+        if (json.message == "") {
+            console.log("No text received!")
+        } else {
+            setCharText(json.message)
+        }
+    }
+
+    useEffect(() => {
+        
+        const interval = setInterval(() => {
+            setUsername("Yakman333")
+            fetchText()
+        }, 3000)
+
+        return () => clearInterval(interval)
+    }, [])
+
+    // useEffect(() => {
+    //     // Make a websocket to listen for text updates
+    //     const charTextSocket = new WebSocket("http://dionysus.headass.house:8000/get-text/" + username);
+
+    //     charTextSocket.addEventListener("open", event => {
+    //         charTextSocket.send("Character " + name + " connection established");
+    //     });
+
+    //     charTextSocket.addEventListener("message", event => {
+    //         console.log(event.data);
+
+    //         if (event.data !== "") {
+    //             setCharText(event.data);
+    //         } else {
+    //             console.log("Possible error or no messages sent yet");
+    //         }
+    //     });
+
+    //     connection.current = charTextSocket;
+
+    //     setCharText("Connected to " + username + "!");
+
+    //     return () => connection.close();
+    // }, []);
 
     return (
         <div className='CharacterBox'>
@@ -26,6 +85,7 @@ const Character = ({
                 <img className='TokenIcon'></img>
                 <p className='TokenValue'>{tokens}</p>
             </div>
+            <p className='CharacterText'>{charText}</p>
         </div>
     )
 }
