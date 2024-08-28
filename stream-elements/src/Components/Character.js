@@ -6,20 +6,16 @@ const Character = ({
     id
 }) => {
 
-    const fullCharacterInfo = useContext(TwitchControlContext)[id];
+    const allCharacterInfo = useContext(TwitchControlContext).allCharacters;
+    const [ fullCharacterInfo, setFullCharacterInfo ] = useState(allCharacterInfo[id]);
+    const setAllCharacterInfo = useContext(TwitchControlContext).setAllCharacters;
     const [dice, setDice] = useState(new Map());
     const [tokens, setTokens] = useState(0);
     const [health, setHealth] = useState(0);
     const [maxHealth, setMaxHealth] = useState(0);
-    const username = fullCharacterInfo.username;
+    const [ username, setUsername ] = useState(fullCharacterInfo.username);
     const [name, setName] = useState("");
     const [charText, setCharText] = useState("");
-
-    //const connection = useRef(null);
-
-    // We don't keep the spoken text element here,
-    // because that's from the TTS server
-    // or maybe it should because it's easier to change the username
 
     async function fetchText() {
         if(username === "") {
@@ -40,6 +36,16 @@ const Character = ({
             setCharText(json.Message)
         }
     }
+
+    useEffect(() => {
+        setFullCharacterInfo(allCharacterInfo[id]);
+        setUsername(allCharacterInfo[id].username);
+        setDice(allCharacterInfo[id].dice);
+        setTokens(allCharacterInfo[id].tokens);
+        setHealth(allCharacterInfo[id].health);
+        setMaxHealth(allCharacterInfo[id].maxHealth);
+        setName(allCharacterInfo[id].name);
+    }, [allCharacterInfo])
 
     useEffect(() => {
         console.log("Starting character with " + id);
@@ -80,15 +86,17 @@ const Character = ({
         <div className='CharacterBox'>
             <img className='CharacterIcon'></img>
             <p className='UsernameText'>{username}</p>
-            <div className='HealthBox'>
-                <img className='HealthIcon'></img>
-                <p className='HealthValue'>{fullCharacterInfo.health}</p>
-            </div>
-            <div className='TokenBox'>
-                <img className='TokenIcon'></img>
-                <p className='TokenValue'>{fullCharacterInfo.tokens}</p>
-            </div>
-            <p className='CharacterText'>{charText}</p>
+            <div className='CountBoxes'>
+                <div className='HealthBox'>
+                    <img className='HealthIcon'></img>
+                    <p className='HealthValue'>{fullCharacterInfo.health}</p>
+                </div>
+                <div className='TokenBox'>
+                    <img className='TokenIcon'></img>
+                    <p className='TokenValue'>{fullCharacterInfo.tokens}</p>
+                </div>
+                <p className='CharacterText'>{charText}</p>
+            </div>       
         </div>
     )
 }

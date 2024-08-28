@@ -1,0 +1,8 @@
+.CharacterBundle {
+
+}
+
+.CharacterGroups {
+    display: flex;
+    flex-direction: row;
+}

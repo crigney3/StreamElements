@@ -1,0 +1,17 @@
+.CharacterBox {
+    display: flex;
+    flex-direction: column;
+}
+
+.CountBoxes {
+    display: flex;
+    flex-direction: row;
+}
+
+.HealthBox {
+    margin: 10px;
+}
+
+.TokenBox {
+    margin: 10px;
+}

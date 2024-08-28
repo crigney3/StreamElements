@@ -1,5 +1,14 @@
 import { createContext } from "react";
 
-const TwitchControlContext = createContext();
+export const updateTwitchContext = (values = {}) => ({ character: values });
+
+// export const CharacterData = {
+
+// }
+
+const TwitchControlContext = createContext({
+
+}
+);
 
 export default  TwitchControlContext;

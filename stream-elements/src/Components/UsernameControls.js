@@ -8,24 +8,36 @@ const UsernameControls = (
 
     const [selectedCharacter, setSelectedCharacter] = useState("");
     const [usernameInput, setUsernameInput] = useState("");
-    const Characters = useContext(TwitchControlContext);
+    const Characters = useContext(TwitchControlContext).allCharacters;
     const [characterSelections, setCharacterSelections] = useState([]);
+    const setAllCharacterInfo = useContext(TwitchControlContext).setAllCharacters;
+    const [tempCharInfo, setTempCharInfo] = useState({});
 
     useEffect(() => {
-        createCharacterItems()
-    }, [])
+        createCharacterItems();
+    }, []);
+
+    useEffect(() => {
+        setAllCharacterInfo(state => ({
+            ...state,
+            tempCharInfo
+        }));
+    }, [tempCharInfo]);
 
     const createCharacterItems = () => {
         let chars = [];
         
         for (let i = 0; i < Characters.length; i++) {
-            chars.push(<option key={Characters[i].name} value={Characters[i].name}>{Characters[i].name}</option>);
+            chars.push(<option key={i} value={i}>{Characters[i].name}</option>);
         }
 
         setCharacterSelections(chars);
+
+        setSelectedCharacter(chars[0].key);
     }
 
     const onCharacterSelect = (e) => {
+        console.log(e.target.value);
         setSelectedCharacter(e.target.value);
     }
 
@@ -33,6 +45,11 @@ const UsernameControls = (
         const response = fetch("http://dionysus.headass.house:8000/set-username/?username=" + encodeURIComponent(usernameInput), {
             method: 'POST'
         });
+
+        let tempChars = Characters;
+        tempChars[selectedCharacter].username = usernameInput;
+        setTempCharInfo(tempChars);
+        console.log(tempCharInfo);
     }
 
     const onRemoveClick = (e) => {
@@ -53,9 +70,11 @@ const UsernameControls = (
             <select name="Characters" id='CharacterSelection' onChange={onCharacterSelect}>
                 {characterSelections}
             </select>
-            <button id="SetButton" onClick={onSetClick}>Set User as Character</button>
-            <button id="RemoveButton" onClick={onRemoveClick}>Remove User as Character</button>
-            <button id="ClearButton" onClick={onClearClick}>Clear All Users</button>
+            <div className='UserServerControllers'>
+                <button id="SetButton" onClick={onSetClick}>Set User as Character</button>
+                <button id="RemoveButton" onClick={onRemoveClick}>Remove User as Character</button>
+                <button id="ClearButton" onClick={onClearClick}>Clear All Users</button>
+            </div>
         </div>
     )
 }

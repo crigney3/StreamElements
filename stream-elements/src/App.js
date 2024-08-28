@@ -5,7 +5,7 @@ import Character from './Components/Character'
 import AdminPage from './Components/AdminPage';
 import RollGraphic from './Components/Roll';
 import TwitchControlContext from './Components/TwitchControlContext';
-import { useState } from 'react'
+import { useCallback, useState } from 'react'
 
 function App() {
 
@@ -60,10 +60,18 @@ function App() {
             sneak: 4
         }}]);
 
+    const setContext = useCallback(updates => {
+      setAllCharacters({...allCharacters, ...updates})
+    }, [allCharacters, setAllCharacters]);
+
+    const getContextValue = useCallback(() => ({
+      ...allCharacters, setContext,
+    }), [allCharacters, setAllCharacters])
+
   return (
     <div className="WholeApp">
         <div className="Routes">
-        <TwitchControlContext.Provider value={allCharacters}>
+        <TwitchControlContext.Provider value={{allCharacters, setAllCharacters}}>
           <Routes>
             <Route path="/" exact element={<p>Nope.</p>} />
             <Route path="/Character1" element={<Character id="0"/>} />
