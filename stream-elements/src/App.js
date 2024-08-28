@@ -25,7 +25,8 @@ function App() {
             tech: 4,
             tough: 4,
             sneak: 4
-        }
+        },
+        rollDice: (diceKey) => {}
     }, 
     {name: "b",
         tokens: 0,
@@ -42,7 +43,9 @@ function App() {
             tech: 4,
             tough: 4,
             sneak: 4
-        }}, 
+        },
+        rollDice: (diceKey) => {}
+      }, 
     {name: "c",
         tokens: 0,
         health: 3,
@@ -58,7 +61,9 @@ function App() {
             tech: 4,
             tough: 4,
             sneak: 4
-        }}]);
+        },
+        rollDice: (diceKey) => {}
+      }]);
 
     const setContext = useCallback(updates => {
       setAllCharacters({...allCharacters, ...updates})

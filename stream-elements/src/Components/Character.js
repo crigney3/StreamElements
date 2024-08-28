@@ -9,6 +9,7 @@ const Character = ({
     const allCharacterInfo = useContext(TwitchControlContext).allCharacters;
     const [ fullCharacterInfo, setFullCharacterInfo ] = useState(allCharacterInfo[id]);
     const setAllCharacterInfo = useContext(TwitchControlContext).setAllCharacters;
+    const [tempCharInfo, setTempCharInfo] = useState({});
     const [dice, setDice] = useState(new Map());
     const [tokens, setTokens] = useState(0);
     const [health, setHealth] = useState(0);
@@ -16,6 +17,12 @@ const Character = ({
     const [ username, setUsername ] = useState(fullCharacterInfo.username);
     const [name, setName] = useState("");
     const [charText, setCharText] = useState("");
+
+    // Dice vars
+    const explosion = useState(new Audio('../../public/explosion.mp3'));
+    const [currentValue, setCurrentValue] = useState(1);
+    const [isRolling, setIsRolling] = useState(false);
+    const [isActive, setIsActive] = useState(false);
 
     async function fetchText() {
         if(username === "") {
@@ -50,6 +57,8 @@ const Character = ({
     useEffect(() => {
         console.log("Starting character with " + id);
 
+        allCharacterInfo[id].rollDice = rollDie;
+
         const interval = setInterval(() => {
             fetchText()   
         }, 3000)
@@ -82,8 +91,65 @@ const Character = ({
     //     return () => connection.close();
     // }, []);
 
+    // Everything here and below is for rolling specifically, up until return
+    const rollDie = (diceKey) => {
+        console.log("Rolling die for character " + fullCharacterInfo.name + " with skill: " + diceKey + " and maxValue: " + fullCharacterInfo.dice[diceKey]);
+        animateDie(diceKey);
+
+        handleRollComplete(diceKey);
+    }
+
+    const animateDie = (diceKey) => {    
+        setIsActive(true);
+        setIsRolling(true);
+
+        let i = 0;
+        let interval = setInterval(() => {
+            i++;
+            setCurrentValue(Math.floor(Math.random() * fullCharacterInfo.dice[diceKey]) + 1);
+            if (i > 30) {
+                clearInterval(interval);
+            }
+        }, 100);
+
+        setIsRolling(false);
+    }
+
+    const handleRollComplete = (diceKey) => {
+        if(currentValue === fullCharacterInfo.dice[diceKey]) {
+            explosion.play();
+
+            let tempChars = allCharacterInfo;
+            if (tempChars[id].dice[diceKey] !== 12 || 
+                tempChars[id].dice[diceKey] !== 20) {
+                
+                tempChars[id].dice[diceKey] = tempChars[id].dice[diceKey] + 2;
+            } else if (tempChars[id].dice[diceKey] === 12) {
+                tempChars[id].dice[diceKey] = 20;
+            } else if (tempChars[id].dice[diceKey] === 20) {
+                // Nothing for now - maybe add a bigger explosion later?
+            } else {
+                throw new Error("Invalid die value! " + tempChars[id].dice[diceKey]);
+            }
+            setTempCharInfo(tempChars);
+
+            rollDie(diceKey);
+        }
+
+        setTimeout(() => {
+            setIsActive(false);
+            setCurrentValue(1);
+        }, 10000);
+    }
+
     return (
         <div className='CharacterBox'>
+            <div className='RollBox'>
+                {(isActive === true) && <div className='ActiveRollBox'>
+                    <img className='DiceImage'></img>
+                    <div className='RollOutput'><p>{currentValue}</p></div>
+                </div>}
+            </div>
             <img className='CharacterIcon'></img>
             <p className='UsernameText'>{username}</p>
             <div className='CountBoxes'>

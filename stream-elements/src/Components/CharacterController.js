@@ -36,7 +36,7 @@ const CharacterController = (
             let item = fullCharacterInfo.dice[diceKeys[i]];
             chars.push(<div className='IndividualDieRow' key={id.id.toString() + i.toString()}>
                 <p className='DiceLabel' >{diceKeys[i]}: {item}</p>
-                <button className='RollDie' onClick={handleDieRoll}>Roll {diceKeys[i]}</button>
+                <button className='RollDie' value={diceKeys[i]} onClick={handleDieRoll}>Roll {diceKeys[i]}</button>
                 </div>);
         }
 
@@ -44,7 +44,7 @@ const CharacterController = (
     }
 
     const handleDieRoll = (e) => {
-
+        fullCharacterInfo.rollDice(e.target.value);
     }
 
     return (
