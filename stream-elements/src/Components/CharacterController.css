@@ -1,0 +1,14 @@
+.CharacterController {
+    display: flex;
+    flex-direction: row;
+}
+
+.StatsBox {
+    display: flex;
+    flex-direction: row;
+}
+
+.DiceControls {
+    display: flex;
+    flex-direction: column;
+}

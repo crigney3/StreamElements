@@ -33,7 +33,7 @@ const UsernameControls = (
 
         setCharacterSelections(chars);
 
-        setSelectedCharacter(chars[0].key);
+        setSelectedCharacter(0);
     }
 
     const onCharacterSelect = (e) => {
@@ -49,19 +49,36 @@ const UsernameControls = (
         let tempChars = Characters;
         tempChars[selectedCharacter].username = usernameInput;
         setTempCharInfo(tempChars);
-        console.log(tempCharInfo);
     }
 
     const onRemoveClick = (e) => {
         const response = fetch("http://dionysus.headass.house:8000/remove-username/?username=" + encodeURIComponent(usernameInput), {
             method: 'POST'
         });
+
+        let tempChars = Characters;
+        tempChars[selectedCharacter].username = '';
+        setTempCharInfo(tempChars);
     }
 
     const onClearClick = (e) => {
         const response = fetch("http://dionysus.headass.house:8000/clear-usernames/", {
             method: 'POST'
         });
+
+        let tempChars = Characters;
+        for (let i = 0; i < tempChars.length; i++) {
+            tempChars[selectedCharacter].username = '';
+        }
+        
+        setTempCharInfo(tempChars);
+    }
+
+    const onNameClick = (e) => {
+        let tempChars = Characters;
+        tempChars[selectedCharacter].name = usernameInput;
+
+        setTempCharInfo(tempChars);
     }
 
     return (
@@ -74,6 +91,7 @@ const UsernameControls = (
                 <button id="SetButton" onClick={onSetClick}>Set User as Character</button>
                 <button id="RemoveButton" onClick={onRemoveClick}>Remove User as Character</button>
                 <button id="ClearButton" onClick={onClearClick}>Clear All Users</button>
+                <button id="SetNameButton" onClick={onNameClick}>Set Name for Character</button>
             </div>
         </div>
     )

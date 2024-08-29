@@ -18,14 +18,14 @@ const AdminPage = () => {
     return (
         
             <div className='AdminPage'>
-                <UsernameControls />
                 <div className='CharacterGroups'>
                     {charIDList.map((_id) => 
                     <div className='CharacterBundle' key={_id}>
-                        <CharacterController id={_id} />
                         <Character id={_id} />
+                        <CharacterController id={_id} />
                     </div>)}
                 </div>
+                <UsernameControls />
             </div>
         
     )

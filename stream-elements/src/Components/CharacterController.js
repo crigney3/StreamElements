@@ -9,7 +9,9 @@ const CharacterController = (
     const setAllCharacterInfo = useContext(TwitchControlContext).setAllCharacters;
     const [tempCharInfo, setTempCharInfo] = useState({});
     const [ fullCharacterInfo, setFullCharacterInfo ] = useState(allCharacterInfo[id.id]);
-    const [ charControlElements, setCharControlElements ] = useState([]);
+    const [ charDiceElements, setcharDiceElements ] = useState([]);
+
+    let tempChars;
 
     useEffect(() => {
         setAllCharacterInfo(state => ({
@@ -29,28 +31,100 @@ const CharacterController = (
     }, [allCharacterInfo]);
 
     const createCharacterControls = () => {
-        let chars = [];
+        let charDice = [];
         
         let diceKeys = Object.keys(fullCharacterInfo.dice);
         for (let i = 0; i < diceKeys.length; i++) {
             let item = fullCharacterInfo.dice[diceKeys[i]];
-            chars.push(<div className='IndividualDieRow' key={id.id.toString() + i.toString()}>
+            charDice.push(<div className='IndividualDieRow' key={id.id.toString() + i.toString()}>
                 <p className='DiceLabel' >{diceKeys[i]}: {item}</p>
                 <button className='RollDie' value={diceKeys[i]} onClick={handleDieRoll}>Roll {diceKeys[i]}</button>
                 </div>);
         }
 
-        setCharControlElements(chars);
+        setcharDiceElements(charDice);
     }
 
     const handleDieRoll = (e) => {
         fullCharacterInfo.rollDice(e.target.value);
     }
 
+    const addToken = (e) => {
+        tempChars = allCharacterInfo;
+        tempChars[id.id].tokens += 1;
+        setTempCharInfo(tempChars);
+    }
+
+    const removeToken = (e) => {
+        if (fullCharacterInfo.tokens <= 0) {
+            return;
+        }
+
+        tempChars = allCharacterInfo;
+        tempChars[id.id].tokens -= 1;
+        setTempCharInfo(tempChars);
+    }
+
+    const removeHealth = (e) => {
+        if (fullCharacterInfo.health <= 0) {
+            // Something special for dropping unconscious?
+            return;
+        }
+
+        tempChars = allCharacterInfo;
+        tempChars[id.id].health -= 1;
+        setTempCharInfo(tempChars);
+    }
+
+    const addHealth = (e) => {
+        if (fullCharacterInfo.health >= fullCharacterInfo.maxHealth) {
+            return;
+        }
+
+        tempChars = allCharacterInfo;
+        tempChars[id.id].health += 1;
+        setTempCharInfo(tempChars);
+    }
+
+    const removeMaxHealth = (e) => {
+        if (fullCharacterInfo.maxHealth <= 1) {
+            return;
+        }
+
+        tempChars = allCharacterInfo;
+        tempChars[id.id].maxHealth -= 1;
+        setTempCharInfo(tempChars);
+    }
+
+    const addMaxHealth = (e) => {
+        tempChars = allCharacterInfo;
+        tempChars[id.id].maxHealth += 1;
+        setTempCharInfo(tempChars);
+    }
+
     return (
         <div className='CharacterController'>
+            <div className='StatsBox'>
+                <div className='TokenBox'>
+                    <p className='TokenLabel'>Tokens: </p>
+                    <button className='TokenMinusButton' onClick={removeToken}>-</button>
+                    <button className='TokenPlusButton' onClick={addToken}>+</button>
+                </div>
+                <div className='HealthBox'>
+                    <div className='CurrentHealth'>
+                        <p className='CurrentHealthLabel'>CurrentHealth: </p>
+                        <button className='HealthMinusButton' onClick={removeHealth}>-</button>
+                        <button className='HealthPlusButton' onClick={addHealth}>+</button>
+                    </div>
+                    <div className='MaxHealth'>
+                        <p className='CurrentMaxHealthLabel'>MaxHealth: </p>
+                        <button className='MaxHealthMinusButton' onClick={removeMaxHealth}>-</button>
+                        <button className='MaxHealthPlusButton' onClick={addMaxHealth}>+</button>
+                    </div>
+                </div>
+            </div>
             <div className='DiceControls'>
-                {charControlElements}
+                {charDiceElements}
             </div>
         </div>
     )

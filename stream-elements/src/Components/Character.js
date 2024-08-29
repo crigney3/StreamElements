@@ -45,6 +45,7 @@ const Character = ({
     }
 
     useEffect(() => {
+        console.log("Character " + id.toString() + " reloading data");
         setFullCharacterInfo(allCharacterInfo[id]);
         setUsername(allCharacterInfo[id].username);
         setDice(allCharacterInfo[id].dice);
@@ -95,8 +96,6 @@ const Character = ({
     const rollDie = (diceKey) => {
         console.log("Rolling die for character " + fullCharacterInfo.name + " with skill: " + diceKey + " and maxValue: " + fullCharacterInfo.dice[diceKey]);
         animateDie(diceKey);
-
-        handleRollComplete(diceKey);
     }
 
     const animateDie = (diceKey) => {    
@@ -104,20 +103,24 @@ const Character = ({
         setIsRolling(true);
 
         let i = 0;
+        let dieRollValue = 1;
         let interval = setInterval(() => {
             i++;
-            setCurrentValue(Math.floor(Math.random() * fullCharacterInfo.dice[diceKey]) + 1);
+            dieRollValue = Math.floor(Math.random() * fullCharacterInfo.dice[diceKey]) + 1;
+            setCurrentValue(dieRollValue);
             if (i > 30) {
                 clearInterval(interval);
+
+                handleRollComplete(diceKey, dieRollValue);
             }
         }, 100);
 
         setIsRolling(false);
     }
 
-    const handleRollComplete = (diceKey) => {
-        if(currentValue === fullCharacterInfo.dice[diceKey]) {
-            explosion.play();
+    const handleRollComplete = (diceKey, dieRollValue) => {
+        if(dieRollValue === fullCharacterInfo.dice[diceKey]) {
+            //explosion.play();
 
             let tempChars = allCharacterInfo;
             if (tempChars[id].dice[diceKey] !== 12 || 
@@ -150,8 +153,15 @@ const Character = ({
                     <div className='RollOutput'><p>{currentValue}</p></div>
                 </div>}
             </div>
+            
             <img className='CharacterIcon'></img>
-            <p className='UsernameText'>{username}</p>
+
+            <div className='CharacterNamesText'>
+                <p className='UsernameText'>{username}</p>
+                <p className='AsText'>As</p>
+                <p className='CharacterName'>{fullCharacterInfo.name}</p>
+            </div>
+
             <div className='CountBoxes'>
                 <div className='HealthBox'>
                     <img className='HealthIcon'></img>

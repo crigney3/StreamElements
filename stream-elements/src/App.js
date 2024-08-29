@@ -3,7 +3,6 @@ import './App.css';
 import { Route, Routes, Navigate } from 'react-router-dom';
 import Character from './Components/Character'
 import AdminPage from './Components/AdminPage';
-import RollGraphic from './Components/Roll';
 import TwitchControlContext from './Components/TwitchControlContext';
 import { useCallback, useState } from 'react'
 
@@ -83,7 +82,6 @@ function App() {
             <Route path="/Admin" element={<AdminPage />} />
             <Route path="/Character2" element={<Character id="1"/>} />
             <Route path="/Character3" element={<Character id="2"/>} />
-            <Route path="/Roll" element={<RollGraphic/>} />
           </Routes>
         </TwitchControlContext.Provider>
         </div>

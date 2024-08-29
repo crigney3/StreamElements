@@ -1,6 +1,7 @@
 .CharacterBox {
     display: flex;
     flex-direction: column;
+    color: red;
 }
 
 .CountBoxes {
