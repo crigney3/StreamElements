@@ -105,12 +105,12 @@ const CharacterController = (
     return (
         <div className='CharacterController'>
             <div className='StatsBox'>
-                <div className='TokenBox'>
+                <div className='TokenControlBox'>
                     <p className='TokenLabel'>Tokens: </p>
                     <button className='TokenMinusButton' onClick={removeToken}>-</button>
                     <button className='TokenPlusButton' onClick={addToken}>+</button>
                 </div>
-                <div className='HealthBox'>
+                <div className='HealthControlBox'>
                     <div className='CurrentHealth'>
                         <p className='CurrentHealthLabel'>CurrentHealth: </p>
                         <button className='HealthMinusButton' onClick={removeHealth}>-</button>

@@ -1,6 +1,8 @@
 .CharacterController {
     display: flex;
     flex-direction: row;
+    color: aliceblue;
+    position: inherit;
 }
 
 .StatsBox {

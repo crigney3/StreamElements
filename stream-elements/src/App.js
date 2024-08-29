@@ -73,6 +73,7 @@ function App() {
     }), [allCharacters, setAllCharacters])
 
   return (
+    <body>
     <div className="WholeApp">
         <div className="Routes">
         <TwitchControlContext.Provider value={{allCharacters, setAllCharacters}}>
@@ -86,6 +87,7 @@ function App() {
         </TwitchControlContext.Provider>
         </div>
     </div>
+    </body>
   );
 }
 

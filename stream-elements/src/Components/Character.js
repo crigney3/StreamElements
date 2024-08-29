@@ -61,6 +61,8 @@ const Character = ({
         allCharacterInfo[id].rollDice = rollDie;
 
         const interval = setInterval(() => {
+            // Not only is this horrendously inefficient, it also doesn't work sometimes.
+            // I'd accept inefficiency for the mvp but I need to make it work consistently
             fetchText()   
         }, 3000)
 
@@ -147,13 +149,6 @@ const Character = ({
 
     return (
         <div className='CharacterBox'>
-            <div className='RollBox'>
-                {(isActive === true) && <div className='ActiveRollBox'>
-                    <img className='DiceImage'></img>
-                    <div className='RollOutput'><p>{currentValue}</p></div>
-                </div>}
-            </div>
-            
             <img className='CharacterIcon'></img>
 
             <div className='CharacterNamesText'>
@@ -167,12 +162,19 @@ const Character = ({
                     <img className='HealthIcon'></img>
                     <p className='HealthValue'>{fullCharacterInfo.health}</p>
                 </div>
+                <div className='RollBox'>
+                    {(isActive === true) && <div className='ActiveRollBox'>
+                        <img className='DiceImage'></img>
+                        <p className='RollOutput'>{currentValue}</p>
+                    </div>}
+                </div>
                 <div className='TokenBox'>
                     <img className='TokenIcon'></img>
                     <p className='TokenValue'>{fullCharacterInfo.tokens}</p>
                 </div>
-                <p className='CharacterText'>{charText}</p>
-            </div>       
+            </div>
+
+            <p className='CharacterText'>{charText}</p>   
         </div>
     )
 }
