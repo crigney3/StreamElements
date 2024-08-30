@@ -2,6 +2,7 @@
 const { WebSocket, WebSocketServer } = require("ws");
 const http = require("http");
 const crypto = require("crypto");
+const { json } = require("react-router-dom");
 
 // Create an HTTP server and a WebSocket server
 const server = http.createServer();
@@ -16,9 +17,11 @@ let connections = {};
 // Handle new client connections
 wsServer.on("connection", function handleNewConnection(connection) {
   const userId = crypto.randomBytes(20).toString('hex');
-  console.log("Received a new connection");
+  console.log("Received a new connection with id: ", userId);
 
   connections[userId] = connection;
+
+  sendMessage(characterData, userId);
 
   connection.on("message", (message) =>
     processReceivedMessage(message),
@@ -35,12 +38,20 @@ function handleClientDisconnection(userId) {
     // delete users[userId];
 }
 
+function sendMessage(jsonMessage, uuid) {
+    const connection = connections[uuid];
+    const stringJSON = JSON.stringify(jsonMessage);
+    let message = "";
+    if (stringJSON !== "{}") {
+        message = stringJSON;
+    }
+    connection.send(message);
+}
+
 // Send a message to every client
 function sendMessageToAllClients(jsonMessage) {
     Object.keys(connections).forEach((uuid) => {
-        const connection = connections[uuid];
-        const message = JSON.stringify(jsonMessage);
-        connection.send(message);
+        sendMessage(jsonMessage, uuid);
     })
 }
 

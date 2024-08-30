@@ -105,9 +105,11 @@ function App() {
         })
   
         connection.current.addEventListener("message", (e) => {
-          console.log(e);
+          if (e.data !== "") {
+            setAllCharacters(JSON.parse(e.data));
+          }
         })
-      }, 500);
+      }, 5);
 
     }, [connection.current]);
 
