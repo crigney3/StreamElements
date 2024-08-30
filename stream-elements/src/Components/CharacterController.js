@@ -14,10 +14,11 @@ const CharacterController = (
     let tempChars;
 
     useEffect(() => {
-        setAllCharacterInfo(state => ({
-            ...state,
-            tempCharInfo
-        }));
+        if(Object.keys(tempCharInfo).length !== 0) {
+            setAllCharacterInfo(state => ({
+                ...tempCharInfo
+            }));
+        }
 
         setFullCharacterInfo(allCharacterInfo[id.id])
     }, [tempCharInfo]);
@@ -52,6 +53,7 @@ const CharacterController = (
     const addToken = (e) => {
         tempChars = allCharacterInfo;
         tempChars[id.id].tokens += 1;
+        tempChars[id.id].dirty = true;
         setTempCharInfo(tempChars);
     }
 
@@ -62,6 +64,7 @@ const CharacterController = (
 
         tempChars = allCharacterInfo;
         tempChars[id.id].tokens -= 1;
+        tempChars[id.id].dirty = true;
         setTempCharInfo(tempChars);
     }
 
@@ -73,6 +76,7 @@ const CharacterController = (
 
         tempChars = allCharacterInfo;
         tempChars[id.id].health -= 1;
+        tempChars[id.id].dirty = true;
         setTempCharInfo(tempChars);
     }
 
@@ -83,6 +87,7 @@ const CharacterController = (
 
         tempChars = allCharacterInfo;
         tempChars[id.id].health += 1;
+        tempChars[id.id].dirty = true;
         setTempCharInfo(tempChars);
     }
 
@@ -93,12 +98,14 @@ const CharacterController = (
 
         tempChars = allCharacterInfo;
         tempChars[id.id].maxHealth -= 1;
+        tempChars[id.id].dirty = true;
         setTempCharInfo(tempChars);
     }
 
     const addMaxHealth = (e) => {
         tempChars = allCharacterInfo;
         tempChars[id.id].maxHealth += 1;
+        tempChars[id.id].dirty = true;
         setTempCharInfo(tempChars);
     }
 

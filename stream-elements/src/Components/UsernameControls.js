@@ -18,10 +18,11 @@ const UsernameControls = (
     }, []);
 
     useEffect(() => {
-        setAllCharacterInfo(state => ({
-            ...state,
-            tempCharInfo
-        }));
+        if(Object.keys(tempCharInfo).length !== 0) {
+            setAllCharacterInfo(state => ({
+                ...tempCharInfo
+            }));
+        }
     }, [tempCharInfo]);
 
     const createCharacterItems = () => {
@@ -48,6 +49,7 @@ const UsernameControls = (
 
         let tempChars = Characters;
         tempChars[selectedCharacter].username = usernameInput;
+        tempChars[selectedCharacter].dirty = true;
         setTempCharInfo(tempChars);
     }
 
@@ -58,6 +60,7 @@ const UsernameControls = (
 
         let tempChars = Characters;
         tempChars[selectedCharacter].username = '';
+        tempChars[selectedCharacter].dirty = true;
         setTempCharInfo(tempChars);
     }
 
@@ -70,6 +73,7 @@ const UsernameControls = (
         for (let i = 0; i < tempChars.length; i++) {
             tempChars[selectedCharacter].username = '';
         }
+        tempChars[selectedCharacter].dirty = true;
         
         setTempCharInfo(tempChars);
     }
@@ -77,6 +81,7 @@ const UsernameControls = (
     const onNameClick = (e) => {
         let tempChars = Characters;
         tempChars[selectedCharacter].name = usernameInput;
+        tempChars[selectedCharacter].dirty = true;
 
         setTempCharInfo(tempChars);
     }
