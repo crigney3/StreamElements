@@ -46,6 +46,7 @@ function sendMessageToAllClients(jsonMessage) {
 
 // Handle incoming data from clients
 function processReceivedMessage(message) {
+    console.log(message.toString());
     const dataFromClient = JSON.parse(message.toString());
     const json = { type: dataFromClient.type };
   

@@ -11,10 +11,6 @@ const AdminPage = () => {
     //const allCharInfo = useContext(TwitchControlContext);
     const [charIDList, setCharIDList] = useState([0, 1, 2]);
 
-    useEffect(() => {
-
-    }, [])
-
     return (
         
             <div className='AdminPage'>

@@ -2,11 +2,10 @@ import logo from './logo.svg';
 import './App.css';
 import { v4 as uuidv4 } from 'uuid';
 import { Route, Routes, Navigate } from 'react-router-dom';
-import Character from './Components/Character'
 import AdminPage from './Components/AdminPage';
 import TwitchControlContext from './Components/TwitchControlContext';
-import { useCallback, useState, useEffect } from 'react';
-import useWebSocket, { ReadyState } from "react-use-websocket";
+import { useCallback, useState, useEffect, useRef } from 'react';
+// import useWebSocket, { ReadyState } from "react-use-websocket";
 
 const WS_URL = "ws://127.0.0.1:8000";
 
@@ -18,15 +17,7 @@ function App() {
 
   // nevermind all that, it's websocket time
   const [connectionID, setConnectionID] = useState("");
-  const { sendJsonMessage, lastJsonMessage, readyState } = useWebSocket(WS_URL, {
-    onOpen: () => {
-      console.log("WebSocket connection established.");
-    },
-    share: true,
-    filter: () => false,
-    retryOnError: true,
-    shouldReconnect: () => true,
-  });
+  const connection = useRef(null);
   const [allCharacters, setAllCharacters] = useState([
     {name: "a",
         tokens: 0,
@@ -87,16 +78,11 @@ function App() {
       }]);
 
     useEffect(() => {
-      if (connectionID && readyState === ReadyState.OPEN) {
-        sendJsonMessage({
-          connectionID,
-          type: "userevent",
-        });
+      if (connection.current === null) {
+        return;
       }
-    }, [connectionID, readyState]);
-
-    useEffect(() => {
-      if (connectionID && readyState === ReadyState.OPEN) {
+      console.log(connection.current.readyState)
+      if (connection.current.readyState === 1) {
         let isDataDirty = false;
         for (let i = 0; i < Object.keys(allCharacters).length; i++) {
           if(allCharacters[i].dirty) {
@@ -106,32 +92,42 @@ function App() {
         }
 
         if (isDataDirty) {
-          sendJsonMessage({type: "contentchange", content: allCharacters});
+          connection.current.send(JSON.stringify({type: "contentchange", content: allCharacters}));
         }
-      } else {
-        console.log("Something went wrong with the ws connection! Or readystate problem at " + readyState);
       }
     }, [allCharacters]);
 
     useEffect(() => {
-      console.log(`Got a new message: ${lastJsonMessage}`);
-    }, [lastJsonMessage]);
+      setTimeout(() => {
+        connection.current.addEventListener("open", (e) => {
+          console.log("WS Connection Established");
+          connection.current.send(JSON.stringify({connectionID, type: "userevent"}));
+        })
+  
+        connection.current.addEventListener("message", (e) => {
+          console.log(e);
+        })
+      }, 500);
+
+    }, [connection.current]);
 
     useEffect(() => {
       setConnectionID(uuidv4());
+
+      connection.current = new WebSocket(WS_URL);
+
+      return () => {
+        if (connection.current.readyState === 1) {
+          connection.current.close();
+        }
+      }
     }, []);
 
   return (
     <div className="WholeApp">
         <div className="Routes">
         <TwitchControlContext.Provider value={{allCharacters, setAllCharacters}}>
-          <Routes>
-            <Route path="/" exact element={<p>Nope.</p>} />
-            <Route path="/Character1" element={<Character id="0"/>} />
-            <Route path="/Admin" element={<AdminPage />} />
-            <Route path="/Character2" element={<Character id="1"/>} />
-            <Route path="/Character3" element={<Character id="2"/>} />
-          </Routes>
+          <AdminPage />
         </TwitchControlContext.Provider>
         </div>
     </div>
