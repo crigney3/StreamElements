@@ -9,10 +9,34 @@ const server = http.createServer();
 // TODO: Make this a wss server for security
 const wsServer = new WebSocketServer({ server });
 const port = 8000;
-
 // Maintain active connections and users
 let characterData = {};
 let connections = {};
+
+// Also connect to the TTS websocket server
+let externalWebSocket = new WebSocket('ws://dionysus.headass.house:8051/');
+
+externalWebSocket.on('open', () => {
+    console.log("TTS Server Connection Established");
+})
+
+externalWebSocket.on('message', (e) => {
+    let newText = JSON.parse(e);
+    console.log(newText);
+    let isDirty = false;
+    Object.keys(characterData).forEach((id) => {
+        if (characterData[id].username !== undefined) {
+            if (characterData[id].username.toString().toLowerCase() === newText.user) {
+                characterData[id].speakerText = newText.message;
+                isDirty = true;
+            }
+        }
+    });
+
+    if (isDirty) sendMessageToAllClients(characterData);
+})
+
+// Back to server stuff
 
 // Handle new client connections
 wsServer.on("connection", function handleNewConnection(connection) {
@@ -57,14 +81,10 @@ function sendMessageToAllClients(jsonMessage) {
 
 // Handle incoming data from clients
 function processReceivedMessage(message) {
-    console.log(message.toString());
     const dataFromClient = JSON.parse(message.toString());
-    const json = { type: dataFromClient.type };
   
     if (dataFromClient.type === "contentchange") {
         characterData = dataFromClient.content;
-        json.data = characterData;
-        console.log("Data Received");
     } else if (dataFromClient.type === "userevent") {
         // No need to do anything except log
         console.log("New client message received");

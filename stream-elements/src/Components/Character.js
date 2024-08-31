@@ -25,23 +25,23 @@ const Character = ({
     const [isActive, setIsActive] = useState(false);
 
     async function fetchText() {
-        if(username === "") {
-            return;
-        }
-        const response = await fetch("http://dionysus.headass.house:8000/get-text/" + encodeURIComponent(username) + "?username=" + encodeURIComponent(username));
-        if (!response.ok) {
-            console.log("Error encountered");
-            return;
-        }
+        // if(username === "") {
+        //     return;
+        // }
+        // const response = await fetch("http://dionysus.headass.house:8000/get-text/" + encodeURIComponent(username) + "?username=" + encodeURIComponent(username));
+        // if (!response.ok) {
+        //     console.log("Error encountered");
+        //     return;
+        // }
 
-        const json = await response.clone().json();
+        // const json = await response.clone().json();
 
-        console.log(json)
-        if (json.Message === "") {
-            console.log("No text received!")
-        } else {
-            setCharText(json.Message)
-        }
+        // console.log(json)
+        // if (json.Message === "") {
+        //     console.log("No text received!")
+        // } else {
+        //     setCharText(json.Message)
+        // }
     }
 
     useEffect(() => {
@@ -53,6 +53,7 @@ const Character = ({
         setHealth(allCharacterInfo[id].health);
         setMaxHealth(allCharacterInfo[id].maxHealth);
         setName(allCharacterInfo[id].name);
+        setCharText(allCharacterInfo[id].speakerText);
     }, [allCharacterInfo])
 
     useEffect(() => {

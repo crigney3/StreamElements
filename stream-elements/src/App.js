@@ -11,10 +11,6 @@ const WS_URL = "ws://127.0.0.1:8000";
 
 function App() {
 
-  // TODO: Save/Load this data from a json file
-  // So that each session loads the real data
-  // Not sure how streamlabs will know to reload tho
-
   // nevermind all that, it's websocket time
   const [connectionID, setConnectionID] = useState("");
   const connection = useRef(null);
@@ -35,6 +31,7 @@ function App() {
             tough: 4,
             sneak: 4
         },
+        speakerText: "",
         dirty: false,
         rollDice: (diceKey) => {}
     }, 
@@ -54,6 +51,7 @@ function App() {
             tough: 4,
             sneak: 4
         },
+        speakerText: "",
         dirty: false,
         rollDice: (diceKey) => {}
       }, 
@@ -73,6 +71,7 @@ function App() {
             tough: 4,
             sneak: 4
         },
+        speakerText: "",
         dirty: false,
         rollDice: (diceKey) => {}
       }]);
