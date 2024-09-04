@@ -3,6 +3,7 @@ const { WebSocket, WebSocketServer } = require("ws");
 const http = require("http");
 const crypto = require("crypto");
 const { json } = require("react-router-dom");
+const fs = require("fs");
 
 // Create an HTTP server and a WebSocket server
 const server = http.createServer();
@@ -85,12 +86,33 @@ function processReceivedMessage(message) {
   
     if (dataFromClient.type === "contentchange") {
         characterData = dataFromClient.content;
+        sendMessageToAllClients(characterData);
     } else if (dataFromClient.type === "userevent") {
         // No need to do anything except log
         console.log("New client message received");
+    } else if (dataFromClient.type === "saveEvent") {
+        saveData();
+    } else if (dataFromClient.type === "loadEvent") {
+        loadData();
     }
-  
-    sendMessageToAllClients(characterData);
+}
+
+// Save the current character data to a file
+function saveData() {
+    let dataAsString = JSON.stringify(characterData);
+    fs.writeFileSync('saveData.json', dataAsString, 'utf8');
+}
+
+// Load the character data from a file
+function loadData() {
+    fs.readFile('saveData.json', 'utf8', (err, data) => {
+        if (err) {
+            console.log(err);
+        } else {
+            characterData = JSON.parse(data);
+        }
+        sendMessageToAllClients(characterData);
+    });
 }
 
 // Start the WebSocket server

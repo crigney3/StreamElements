@@ -127,7 +127,7 @@ function App() {
   return (
     <div className="WholeApp">
         <div className="Routes">
-        <TwitchControlContext.Provider value={{allCharacters, setAllCharacters}}>
+        <TwitchControlContext.Provider value={{allCharacters, setAllCharacters, connection}}>
           <AdminPage />
         </TwitchControlContext.Provider>
         </div>

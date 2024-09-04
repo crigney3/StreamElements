@@ -12,6 +12,7 @@ const UsernameControls = (
     const [characterSelections, setCharacterSelections] = useState([]);
     const setAllCharacterInfo = useContext(TwitchControlContext).setAllCharacters;
     const [tempCharInfo, setTempCharInfo] = useState({});
+    const socketConnection = useContext(TwitchControlContext).connection;
 
     useEffect(() => {
         createCharacterItems();
@@ -86,6 +87,14 @@ const UsernameControls = (
         setTempCharInfo(tempChars);
     }
 
+    const onSaveClick = (e) => {
+        socketConnection.current.send(JSON.stringify({type: "saveEvent"}));
+    }
+
+    const onLoadClick = (e) => {
+        socketConnection.current.send(JSON.stringify({type: "loadEvent"}));
+    }
+
     return (
         <div className='AllUsernameControls'>
             <input type="text" id="usernameInput" value={usernameInput} onInput={e => setUsernameInput(e.target.value)}></input>
@@ -97,6 +106,8 @@ const UsernameControls = (
                 <button id="RemoveButton" onClick={onRemoveClick}>Remove User as Character</button>
                 <button id="ClearButton" onClick={onClearClick}>Clear All Users</button>
                 <button id="SetNameButton" onClick={onNameClick}>Set Name for Character</button>
+                <button id='SaveDataButton' onClick={onSaveClick}>Save Current Data</button>
+                <button id='LoadDataButton' onClick={onLoadClick}>Load Saved Data</button>
             </div>
         </div>
     )
