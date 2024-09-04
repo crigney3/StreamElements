@@ -70,10 +70,10 @@ const UsernameControls = (
         });
 
         let tempChars = Characters;
-        for (let i = 0; i < tempChars.length; i++) {
-            tempChars[selectedCharacter].username = '';
+        for (let i = 0; i < Object.keys(tempChars).length; i++) {
+            tempChars[i].username = '';
+            tempChars[i].dirty = true;
         }
-        tempChars[selectedCharacter].dirty = true;
         
         setTempCharInfo(tempChars);
     }
