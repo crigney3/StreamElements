@@ -2,6 +2,9 @@ import './Character.css'
 import { useState, useEffect, useContext } from 'react'
 import TwitchControlContext from './TwitchControlContext';
 
+const dicePathStart = '/DiceShapes/d';
+const dicePathEnd = 'Icon.png';
+
 const Character = ({
     id
 }) => {
@@ -10,90 +13,32 @@ const Character = ({
     const [ fullCharacterInfo, setFullCharacterInfo ] = useState(allCharacterInfo[id]);
     const setAllCharacterInfo = useContext(TwitchControlContext).setAllCharacters;
     const [tempCharInfo, setTempCharInfo] = useState({});
-    const [dice, setDice] = useState(new Map());
-    const [tokens, setTokens] = useState(0);
-    const [health, setHealth] = useState(0);
-    const [maxHealth, setMaxHealth] = useState(0);
-    const [ username, setUsername ] = useState(fullCharacterInfo.username);
-    const [name, setName] = useState("");
     const [charText, setCharText] = useState("");
 
     // Dice vars
-    const explosion = useState(new Audio('../../public/explosion.mp3'));
+    const explosion = useState(new Audio('/explosion.mp3'));
     const [currentValue, setCurrentValue] = useState(1);
     const [isRolling, setIsRolling] = useState(false);
     const [isActive, setIsActive] = useState(false);
-
-    async function fetchText() {
-        // if(username === "") {
-        //     return;
-        // }
-        // const response = await fetch("http://dionysus.headass.house:8000/get-text/" + encodeURIComponent(username) + "?username=" + encodeURIComponent(username));
-        // if (!response.ok) {
-        //     console.log("Error encountered");
-        //     return;
-        // }
-
-        // const json = await response.clone().json();
-
-        // console.log(json)
-        // if (json.Message === "") {
-        //     console.log("No text received!")
-        // } else {
-        //     setCharText(json.Message)
-        // }
-    }
+    const [diceImagePath, setDiceImagePath] = useState('/DiceShapes/d4Icon.png');
 
     useEffect(() => {
-        console.log("Character " + id.toString() + " reloading data");
-        setFullCharacterInfo(allCharacterInfo[id]);
-        setUsername(allCharacterInfo[id].username);
-        setDice(allCharacterInfo[id].dice);
-        setTokens(allCharacterInfo[id].tokens);
-        setHealth(allCharacterInfo[id].health);
-        setMaxHealth(allCharacterInfo[id].maxHealth);
-        setName(allCharacterInfo[id].name);
-        setCharText(allCharacterInfo[id].speakerText);
-    }, [allCharacterInfo])
+        if(Object.keys(tempCharInfo).length !== 0) {
+            setAllCharacterInfo(state => ({
+                ...tempCharInfo
+            }));
+        }
+    }, [tempCharInfo]);
 
     useEffect(() => {
         console.log("Starting character with " + id);
 
+        setFullCharacterInfo(allCharacterInfo[id])
+
+        setTempCharInfo(allCharacterInfo);
+
         allCharacterInfo[id].rollDice = rollDie;
-
-        const interval = setInterval(() => {
-            // Not only is this horrendously inefficient, it also doesn't work sometimes.
-            // I'd accept inefficiency for the mvp but I need to make it work consistently
-            fetchText()   
-        }, 3000)
-
-        return () => clearInterval(interval)
-    }, [])
-
-    // useEffect(() => {
-    //     // Make a websocket to listen for text updates
-    //     const charTextSocket = new WebSocket("http://dionysus.headass.house:8000/get-text/" + username);
-
-    //     charTextSocket.addEventListener("open", event => {
-    //         charTextSocket.send("Character " + name + " connection established");
-    //     });
-
-    //     charTextSocket.addEventListener("message", event => {
-    //         console.log(event.data);
-
-    //         if (event.data !== "") {
-    //             setCharText(event.data);
-    //         } else {
-    //             console.log("Possible error or no messages sent yet");
-    //         }
-    //     });
-
-    //     connection.current = charTextSocket;
-
-    //     setCharText("Connected to " + username + "!");
-
-    //     return () => connection.close();
-    // }, []);
+    }, []);
 
     // Everything here and below is for rolling specifically, up until return
     const rollDie = (diceKey) => {
@@ -101,7 +46,9 @@ const Character = ({
         animateDie(diceKey);
     }
 
-    const animateDie = (diceKey) => {    
+    const animateDie = (diceKey) => { 
+        setDiceImagePath(dicePathStart + fullCharacterInfo.dice[diceKey].toString() + dicePathEnd);
+        
         setIsActive(true);
         setIsRolling(true);
 
@@ -153,7 +100,7 @@ const Character = ({
             <img className='CharacterIcon'></img>
 
             <div className='CharacterNamesText'>
-                <p className='UsernameText'>{username}</p>
+                <p className='UsernameText'>{fullCharacterInfo.username}</p>
                 <p className='AsText'>As</p>
                 <p className='CharacterName'>{fullCharacterInfo.name}</p>
             </div>
@@ -165,7 +112,7 @@ const Character = ({
                 </div>
                 <div className='RollBox'>
                     {(isActive === true) && <div className='ActiveRollBox'>
-                        <img className='DiceImage'></img>
+                        <img className='DiceImage' src={diceImagePath}></img>
                         <p className='RollOutput'>{currentValue}</p>
                     </div>}
                 </div>

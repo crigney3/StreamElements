@@ -7,7 +7,7 @@ const CharacterController = (
 ) => {
     const allCharacterInfo = useContext(TwitchControlContext).allCharacters;
     const setAllCharacterInfo = useContext(TwitchControlContext).setAllCharacters;
-    const [tempCharInfo, setTempCharInfo] = useState({});
+    const [tempCharInfo, setTempCharInfo] = useState(allCharacterInfo);
     const [ fullCharacterInfo, setFullCharacterInfo ] = useState(allCharacterInfo[id.id]);
     const [ charDiceElements, setcharDiceElements ] = useState([]);
 
