@@ -33,7 +33,7 @@ function App() {
         },
         speakerText: "",
         dirty: false,
-        rollDice: (diceKey) => {}
+        rollDice: undefined
     }, 
     {name: "b",
         tokens: 0,
@@ -53,7 +53,7 @@ function App() {
         },
         speakerText: "",
         dirty: false,
-        rollDice: (diceKey) => {}
+        rollDice: undefined
       }, 
     {name: "c",
         tokens: 0,
@@ -73,14 +73,14 @@ function App() {
         },
         speakerText: "",
         dirty: false,
-        rollDice: (diceKey) => {}
+        rollDice: undefined
       }]);
 
     useEffect(() => {
       if (connection.current === null) {
         return;
       }
-      console.log(connection.current.readyState)
+
       if (connection.current.readyState === 1) {
         let isDataDirty = false;
         for (let i = 0; i < Object.keys(allCharacters).length; i++) {
@@ -91,6 +91,7 @@ function App() {
         }
 
         if (isDataDirty) {
+          console.log(allCharacters)
           connection.current.send(JSON.stringify({type: "contentchange", content: allCharacters}));
         }
       }

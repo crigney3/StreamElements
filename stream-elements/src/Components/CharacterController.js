@@ -19,30 +19,25 @@ const CharacterController = (
                 ...tempCharInfo
             }));
         }
-
-        setFullCharacterInfo(allCharacterInfo[id.id])
     }, [tempCharInfo]);
 
     useEffect(() => {
-        createCharacterControls();
-    }, []);
+        setFullCharacterInfo(allCharacterInfo[id.id]);
 
-    useEffect(() => {
         createCharacterControls();
     }, [allCharacterInfo]);
 
     const createCharacterControls = () => {
         let charDice = [];
         
-        let diceKeys = Object.keys(fullCharacterInfo.dice);
+        let diceKeys = Object.keys(allCharacterInfo[id.id].dice);
         for (let i = 0; i < diceKeys.length; i++) {
-            let item = fullCharacterInfo.dice[diceKeys[i]];
+            let item = allCharacterInfo[id.id].dice[diceKeys[i]];
             charDice.push(<div className='IndividualDieRow' key={id.id.toString() + i.toString()}>
                 <p className='DiceLabel' >{diceKeys[i]}: {item}</p>
                 <button className='RollDie' value={diceKeys[i]} onClick={handleDieRoll}>Roll {diceKeys[i]}</button>
                 </div>);
         }
-
         setcharDiceElements(charDice);
     }
 

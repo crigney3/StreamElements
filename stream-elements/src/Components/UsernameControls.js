@@ -39,7 +39,6 @@ const UsernameControls = (
     }
 
     const onCharacterSelect = (e) => {
-        console.log(e.target.value);
         setSelectedCharacter(e.target.value);
     }
 
