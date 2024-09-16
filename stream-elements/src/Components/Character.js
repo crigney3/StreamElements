@@ -123,7 +123,7 @@ const Character = ({
 
             <div className='CountBoxes'>
                 <div className='HealthBox'>
-                    <img className='HealthIcon'></img>
+                    <img className='HealthIcon' src='/DiceShapes/healthIcon.png'></img>
                     <p className='HealthValue'>{allCharacterInfo[id].health}</p>
                 </div>
                 <div className='RollBox'>
@@ -133,7 +133,7 @@ const Character = ({
                     </div>}
                 </div>
                 <div className='TokenBox'>
-                    <img className='TokenIcon'></img>
+                    <img className='TokenIcon' src='/DiceShapes/turboIcon.png'></img>
                     <p className='TokenValue'>{allCharacterInfo[id].tokens}</p>
                 </div>
             </div>
