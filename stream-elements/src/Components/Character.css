@@ -3,7 +3,7 @@
     flex-direction: column;
     color: red;
     position: relative;
-    width: 250px;
+    width: 240px;
     height: 300px;
     margin-right: 10px;
     margin-left: 10px;
@@ -129,12 +129,15 @@
     font-family: Eord;
 }
 
+.TextBoxController {
+    height: 60%;
+}
+
 .CharacterText {
     text-wrap: pretty;
     text-align: center;
     color:rgb(248, 145, 158);
-    margin: 0px;
-    font-size: 20px;
+    margin: 10px;
 }
 
 @font-face {

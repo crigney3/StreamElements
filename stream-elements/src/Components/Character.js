@@ -1,5 +1,5 @@
 import './Character.css'
-import { useState, useEffect, useContext } from 'react'
+import { useState, useEffect, useContext, useRef } from 'react'
 import TwitchControlContext from './TwitchControlContext';
 
 const dicePathStart = '/DiceShapes/d';
@@ -14,6 +14,9 @@ const Character = ({
     const setAllCharacterInfo = useContext(TwitchControlContext).setAllCharacters;
     const [tempCharInfo, setTempCharInfo] = useState({});
     const [charText, setCharText] = useState("");
+    const characterTextRef = useRef(null);
+    const characterContainerRef = useRef(null);
+    const [charTextSize, setCharTextSize] = useState(30);
 
     // Dice vars
     //const explosion = useState(new Audio('/explosion.mp3'));
@@ -43,7 +46,24 @@ const Character = ({
     
             setTempCharInfo(tempChars);
         } 
+
+        setCharText(allCharacterInfo[id].speakerText);
     }, [allCharacterInfo]);
+
+    useEffect(() => {
+        resize_to_fit();
+    }, [charText]);
+
+    useEffect(() => {
+        if(characterTextRef.current.clientHeight >= characterContainerRef.current.clientHeight){
+            resize_to_fit();
+        }
+    }, [charTextSize]);
+
+    const resize_to_fit = () => {
+        setCharTextSize(charTextSize - 1);
+        console.log(charTextSize);
+    }
 
     // Everything here and below is for rolling specifically, up until return
     const rollDie = (diceKey) => {
@@ -112,7 +132,7 @@ const Character = ({
     }
 
     return (
-        <div className='CharacterBox'>
+        <div className='CharacterBox' >
             <img className='CharacterIcon'></img>
 
             <div className='CharacterNamesText'>
@@ -138,7 +158,9 @@ const Character = ({
                 </div>
             </div>
 
-            <p className='CharacterText'>{charText}</p>   
+            <div className='TextBoxController' ref={characterContainerRef}>
+                <p className='CharacterText' ref={characterTextRef} style={{fontSize:charTextSize}}>{charText}</p>   
+            </div>           
         </div>
     )
 }

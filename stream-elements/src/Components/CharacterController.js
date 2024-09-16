@@ -1,5 +1,5 @@
 import TwitchControlContext from './TwitchControlContext';
-import './UsernameControls.css'
+import './CharacterController.css'
 import { useContext, useEffect, useState } from 'react'
 
 const CharacterController = (
@@ -112,17 +112,15 @@ const CharacterController = (
                     <button className='TokenMinusButton' onClick={removeToken}>-</button>
                     <button className='TokenPlusButton' onClick={addToken}>+</button>
                 </div>
-                <div className='HealthControlBox'>
-                    <div className='CurrentHealth'>
-                        <p className='CurrentHealthLabel'>CurrentHealth: </p>
-                        <button className='HealthMinusButton' onClick={removeHealth}>-</button>
-                        <button className='HealthPlusButton' onClick={addHealth}>+</button>
-                    </div>
-                    <div className='MaxHealth'>
-                        <p className='CurrentMaxHealthLabel'>MaxHealth: </p>
-                        <button className='MaxHealthMinusButton' onClick={removeMaxHealth}>-</button>
-                        <button className='MaxHealthPlusButton' onClick={addMaxHealth}>+</button>
-                    </div>
+                <div className='CurrentHealth'>
+                    <p className='CurrentHealthLabel'>CurrentHealth: </p>
+                    <button className='HealthMinusButton' onClick={removeHealth}>-</button>
+                    <button className='HealthPlusButton' onClick={addHealth}>+</button>
+                </div>
+                <div className='MaxHealth'>
+                    <p className='CurrentMaxHealthLabel'>MaxHealth: </p>
+                    <button className='MaxHealthMinusButton' onClick={removeMaxHealth}>-</button>
+                    <button className='MaxHealthPlusButton' onClick={addMaxHealth}>+</button>
                 </div>
             </div>
             <div className='DiceControls'>

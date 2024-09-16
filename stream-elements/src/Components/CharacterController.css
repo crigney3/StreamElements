@@ -1,16 +1,38 @@
 .CharacterController {
     display: flex;
-    flex-direction: row;
+    flex-direction: column;
     color: aliceblue;
     position: inherit;
+    width: 250px;
+    margin-bottom: 100px;
 }
 
 .StatsBox {
     display: flex;
+    flex-direction: column;
+}
+
+.TokenControlBox {
+    display: flex;
     flex-direction: row;
+    height: 33%;
+}
+
+.CurrentHealth {
+    display: flex;
+    flex-direction: row;
+    height: 33%;
+}
+
+.MaxHealth {
+    display: flex;
+    flex-direction: row;
+    height: 33%;
 }
 
 .DiceControls {
+    width: 100%;
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
+    flex-wrap: wrap;
 }

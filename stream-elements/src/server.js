@@ -30,6 +30,7 @@ externalWebSocket.on('message', (e) => {
             if (characterData[id].username.toString().toLowerCase() === newText.user) {
                 characterData[id].speakerText = newText.message;
                 isDirty = true;
+                console.log(newText.message);
             }
         }
     });
@@ -85,11 +86,16 @@ function processReceivedMessage(message) {
     const dataFromClient = JSON.parse(message.toString());
   
     if (dataFromClient.type === "contentchange") {
+        // This type means character data has changed -
+        // update all clients
         characterData = dataFromClient.content;
         sendMessageToAllClients(characterData);
     } else if (dataFromClient.type === "userevent") {
         // No need to do anything except log
         console.log("New client message received");
+    } else if (dataFromClient.type === "rollEvent") {
+        rollData = dataFromClient.content;
+        sendMessageToAllClients(rollData);
     } else if (dataFromClient.type === "saveEvent") {
         saveData();
     } else if (dataFromClient.type === "loadEvent") {
