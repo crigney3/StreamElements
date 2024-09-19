@@ -47,10 +47,8 @@ wsServer.on("connection", function handleNewConnection(connection) {
 
   connections[userId] = connection;
 
-  sendMessage(characterData, userId);
-
   connection.on("message", (message) =>
-    processReceivedMessage(message),
+    processReceivedMessage(message, userId),
   );
   connection.on("close", () => handleClientDisconnection(userId));
 });
@@ -82,7 +80,7 @@ function sendMessageToAllClients(jsonMessage) {
 }
 
 // Handle incoming data from clients
-function processReceivedMessage(message) {
+function processReceivedMessage(message, userId) {
     const dataFromClient = JSON.parse(message.toString());
   
     if (dataFromClient.type === "contentchange") {
@@ -91,16 +89,28 @@ function processReceivedMessage(message) {
         characterData = dataFromClient.content;
         sendMessageToAllClients(characterData);
     } else if (dataFromClient.type === "userevent") {
-        // No need to do anything except log
         console.log("New client message received");
+        // Send the new user a copy of the current state
+        //sendMessage(characterData, userId);
+        sendMessageToAllClients(characterData);
     } else if (dataFromClient.type === "rollEvent") {
-        rollData = dataFromClient.content;
-        sendMessageToAllClients(rollData);
+        let dieMax = dataFromClient.content;
+        let rollResult = rollDie(dieMax);
+        console.log(rollResult);
+        dataFromClient.content = rollResult;
+        sendMessageToAllClients(dataFromClient);
     } else if (dataFromClient.type === "saveEvent") {
         saveData();
     } else if (dataFromClient.type === "loadEvent") {
         loadData();
     }
+}
+
+// Since die rolls are on the server, we need a recursive method to handle explosions
+function rollDie(rollMaxValue) {
+    let rollResult = Math.floor(Math.random() * rollMaxValue) + 1;
+
+    return rollResult;
 }
 
 // Save the current character data to a file

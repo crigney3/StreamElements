@@ -24,6 +24,9 @@ const Character = ({
     const [isRolling, setIsRolling] = useState(false);
     const [isActive, setIsActive] = useState(false);
     const [diceImagePath, setDiceImagePath] = useState('/DiceShapes/d4Icon.png');
+    const rollResult = useContext(TwitchControlContext).serverRollResult;
+    const rollResultKey = useContext(TwitchControlContext).serverDiceKey;
+    const rollResultId = useContext(TwitchControlContext).serverDiceCharacterId;
 
     useEffect(() => {
         if(Object.keys(tempCharInfo).length !== 0) {
@@ -39,13 +42,13 @@ const Character = ({
     }, []);
 
     useEffect(() => {
-        if (allCharacterInfo[id].rollDice === undefined) {
-            let tempChars = allCharacterInfo;
+        // if (allCharacterInfo[id].rollDice === undefined) {
+        //     let tempChars = allCharacterInfo;
 
-            tempChars[id].rollDice = rollDie;
+        //     tempChars[id].rollDice = rollDie;
     
-            setTempCharInfo(tempChars);
-        } 
+        //     setTempCharInfo(tempChars);
+        // } 
 
         setCharText(allCharacterInfo[id].speakerText);
     }, [allCharacterInfo]);
@@ -59,6 +62,12 @@ const Character = ({
             resize_to_fit();
         }
     }, [charTextSize]);
+
+    useEffect(() => {
+        if (rollResultKey !== "" && rollResultId === id) {
+            rollDie(rollResultKey);
+        }   
+    }, [rollResult])
 
     const resize_to_fit = () => {
         setCharTextSize(charTextSize - 1);
@@ -82,11 +91,13 @@ const Character = ({
         let interval = setInterval(() => {
             i++;
             dieRollValue = Math.floor(Math.random() * allCharacterInfo[id].dice[diceKey]) + 1;
-            setCurrentValue(dieRollValue);
             if (i > 30) {
                 clearInterval(interval);
 
-                handleRollComplete(diceKey, dieRollValue);
+                setCurrentValue(rollResult);
+                handleRollComplete(diceKey, rollResult);
+            } else {
+                setCurrentValue(dieRollValue);
             }
         }, 100);
 
@@ -118,7 +129,7 @@ const Character = ({
 
             //explosion.play();
             let interval = setInterval(() => {
-                rollDie(diceKey);
+                allCharacterInfo[id].rollDice(diceKey, id);
 
                 clearInterval(interval);
             }, 2000);

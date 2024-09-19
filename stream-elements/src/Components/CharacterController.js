@@ -42,7 +42,8 @@ const CharacterController = (
     }
 
     const handleDieRoll = (e) => {
-        fullCharacterInfo.rollDice(e.target.value);
+        console.log(e.target.value)
+        fullCharacterInfo.rollDice(e.target.value, id.id);
     }
 
     const addToken = (e) => {

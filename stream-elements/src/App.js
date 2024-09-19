@@ -13,6 +13,9 @@ function App() {
 
   // nevermind all that, it's websocket time
   const [connectionID, setConnectionID] = useState("");
+  const [serverRollResult, setServerRollResult] = useState(0);
+  const [serverDiceKey, setServerDiceKey] = useState("");
+  const [serverDiceCharacterId, setServerDiceCharacterId] = useState(0);
   const connection = useRef(null);
   const [allCharacters, setAllCharacters] = useState([
     {name: "a",
@@ -97,7 +100,17 @@ function App() {
       }
     }, [allCharacters]);
 
+    // useEffect(() => {
+
+    //   console.log("Connection updated")
+
+    // }, [connection.current]);
+
     useEffect(() => {
+      setConnectionID(uuidv4());
+
+      connection.current = new WebSocket(WS_URL);
+
       setTimeout(() => {
         connection.current.addEventListener("open", (e) => {
           console.log("WS Connection Established");
@@ -106,17 +119,22 @@ function App() {
   
         connection.current.addEventListener("message", (e) => {
           if (e.data !== "") {
-            setAllCharacters(JSON.parse(e.data));
+            let incomingData = JSON.parse(e.data);
+
+            if (incomingData.type === "contentchange") {
+              setAllCharacters(incomingData);
+            } else if(incomingData.type === "rollEvent") {
+              setServerDiceKey(incomingData.key);
+              setServerRollResult(incomingData.content);
+              setServerDiceCharacterId(incomingData.id);
+            }
           }
         })
       }, 5);
 
-    }, [connection.current]);
-
-    useEffect(() => {
-      setConnectionID(uuidv4());
-
-      connection.current = new WebSocket(WS_URL);
+      allCharacters[0].rollDice = sendRollMessage;
+      allCharacters[1].rollDice = sendRollMessage;
+      allCharacters[2].rollDice = sendRollMessage;
 
       return () => {
         if (connection.current.readyState === 1) {
@@ -125,10 +143,14 @@ function App() {
       }
     }, []);
 
+    const sendRollMessage = (diceKey, characterID) => {
+      connection.current.send(JSON.stringify({type: "rollEvent", content: allCharacters[characterID].dice[diceKey], id: characterID, key: diceKey}));
+    }
+
   return (
     <div className="WholeApp">
         <div className="Routes">
-        <TwitchControlContext.Provider value={{allCharacters, setAllCharacters, connection}}>
+        <TwitchControlContext.Provider value={{allCharacters, setAllCharacters, connection, serverRollResult, serverDiceKey, serverDiceCharacterId}}>
           <AdminPage />
         </TwitchControlContext.Provider>
         </div>
