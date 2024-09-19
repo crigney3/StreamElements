@@ -129,6 +129,7 @@ const Character = ({
 
             //explosion.play();
             let interval = setInterval(() => {
+                console.log("exploded")
                 allCharacterInfo[id].rollDice(diceKey, id);
 
                 clearInterval(interval);

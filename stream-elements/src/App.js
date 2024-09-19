@@ -80,6 +80,54 @@ function App() {
       }]);
 
     useEffect(() => {
+      sendContentMessage();
+    }, [allCharacters]);
+
+    useEffect(() => {
+      setConnectionID(uuidv4());
+
+      connection.current = new WebSocket(WS_URL);
+
+      for (let i = 0; i < Object.keys(allCharacters).length; i++) {
+        allCharacters[i].rollDice = sendRollMessage;
+      }
+
+      setTimeout(() => {  
+        connection.current.addEventListener("message", (e) => {
+          if (e.data !== "") {
+            let incomingData = JSON.parse(e.data);
+            console.log(incomingData.type);
+            if (incomingData.type === "contentchange" || incomingData.type === "userevent") {
+              for (let i = 0; i < Object.keys(incomingData.content).length; i++) {
+                incomingData.content[i].rollDice = sendRollMessage;
+              }
+              setAllCharacters(incomingData.content);
+            } else if(incomingData.type === "rollEvent") {
+              setServerDiceKey(incomingData.key);
+              setServerRollResult(incomingData.content);
+              setServerDiceCharacterId(incomingData.id);
+            }
+          }
+        });
+
+        connection.current.addEventListener("open", (e) => {
+          console.log("WS Connection Established");
+          connection.current.send(JSON.stringify({type: "userevent", content: 0}));
+        });
+      }, 5);
+
+      return () => {
+        if (connection.current.readyState === 1) {
+          connection.current.close();
+        }
+      }
+    }, []);
+
+    const sendRollMessage = (diceKey, characterID) => {
+      connection.current.send(JSON.stringify({type: "rollEvent", content: allCharacters[characterID].dice[diceKey], id: characterID, key: diceKey}));
+    }
+
+    const sendContentMessage = () => {
       if (connection.current === null) {
         return;
       }
@@ -94,57 +142,10 @@ function App() {
         }
 
         if (isDataDirty) {
-          console.log(allCharacters)
-          connection.current.send(JSON.stringify({type: "contentchange", content: allCharacters}));
+          let msgObject = JSON.stringify({type: "contentchange", content: allCharacters});
+          connection.current.send(msgObject);
         }
       }
-    }, [allCharacters]);
-
-    // useEffect(() => {
-
-    //   console.log("Connection updated")
-
-    // }, [connection.current]);
-
-    useEffect(() => {
-      setConnectionID(uuidv4());
-
-      connection.current = new WebSocket(WS_URL);
-
-      setTimeout(() => {
-        connection.current.addEventListener("open", (e) => {
-          console.log("WS Connection Established");
-          connection.current.send(JSON.stringify({connectionID, type: "userevent"}));
-        })
-  
-        connection.current.addEventListener("message", (e) => {
-          if (e.data !== "") {
-            let incomingData = JSON.parse(e.data);
-
-            if (incomingData.type === "contentchange") {
-              setAllCharacters(incomingData);
-            } else if(incomingData.type === "rollEvent") {
-              setServerDiceKey(incomingData.key);
-              setServerRollResult(incomingData.content);
-              setServerDiceCharacterId(incomingData.id);
-            }
-          }
-        })
-      }, 5);
-
-      allCharacters[0].rollDice = sendRollMessage;
-      allCharacters[1].rollDice = sendRollMessage;
-      allCharacters[2].rollDice = sendRollMessage;
-
-      return () => {
-        if (connection.current.readyState === 1) {
-          connection.current.close();
-        }
-      }
-    }, []);
-
-    const sendRollMessage = (diceKey, characterID) => {
-      connection.current.send(JSON.stringify({type: "rollEvent", content: allCharacters[characterID].dice[diceKey], id: characterID, key: diceKey}));
     }
 
   return (

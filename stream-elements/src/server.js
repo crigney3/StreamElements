@@ -87,12 +87,14 @@ function processReceivedMessage(message, userId) {
         // This type means character data has changed -
         // update all clients
         characterData = dataFromClient.content;
-        sendMessageToAllClients(characterData);
+        sendMessageToAllClients(dataFromClient);
     } else if (dataFromClient.type === "userevent") {
         console.log("New client message received");
-        // Send the new user a copy of the current state
-        //sendMessage(characterData, userId);
-        sendMessageToAllClients(characterData);
+        // Send the new user a copy of the current state, if it exists
+        if (JSON.stringify(characterData) !== "{}") {
+            dataFromClient.content = characterData;
+            sendMessage(dataFromClient, userId);
+        }
     } else if (dataFromClient.type === "rollEvent") {
         let dieMax = dataFromClient.content;
         let rollResult = rollDie(dieMax);
@@ -100,8 +102,10 @@ function processReceivedMessage(message, userId) {
         dataFromClient.content = rollResult;
         sendMessageToAllClients(dataFromClient);
     } else if (dataFromClient.type === "saveEvent") {
+        console.log("Saving to file");
         saveData();
     } else if (dataFromClient.type === "loadEvent") {
+        console.log("Loading from file");
         loadData();
     }
 }

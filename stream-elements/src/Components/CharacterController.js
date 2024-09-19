@@ -42,7 +42,6 @@ const CharacterController = (
     }
 
     const handleDieRoll = (e) => {
-        console.log(e.target.value)
         fullCharacterInfo.rollDice(e.target.value, id.id);
     }
 
