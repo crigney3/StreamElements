@@ -106,7 +106,7 @@ function processReceivedMessage(message, userId) {
         saveData();
     } else if (dataFromClient.type === "loadEvent") {
         console.log("Loading from file");
-        loadData();
+        loadData(dataFromClient);
     }
 }
 
@@ -124,14 +124,17 @@ function saveData() {
 }
 
 // Load the character data from a file
-function loadData() {
+function loadData(incomingData) {
     fs.readFile('saveData.json', 'utf8', (err, data) => {
         if (err) {
             console.log(err);
         } else {
             characterData = JSON.parse(data);
         }
-        sendMessageToAllClients(characterData);
+
+        incomingData.content = characterData;
+        incomingData.type = "contentchange";
+        sendMessageToAllClients(incomingData);
     });
 }
 

@@ -19,7 +19,7 @@ const Character = ({
     const [charTextSize, setCharTextSize] = useState(30);
 
     // Dice vars
-    //const explosion = useState(new Audio('/explosion.mp3'));
+    let explosion = new Audio('/explosion.mp3');
     const [currentValue, setCurrentValue] = useState(1);
     const [isRolling, setIsRolling] = useState(false);
     const [isActive, setIsActive] = useState(false);
@@ -127,13 +127,13 @@ const Character = ({
                 setTempCharInfo(tempChars);
             }
 
-            //explosion.play();
+            explosion.play();
             let interval = setInterval(() => {
                 console.log("exploded")
                 allCharacterInfo[id].rollDice(diceKey, id);
 
                 clearInterval(interval);
-            }, 2000);
+            }, 4000);
             
         }
 

@@ -91,7 +91,7 @@ const UsernameControls = (
     }
 
     const onLoadClick = (e) => {
-        socketConnection.current.send(JSON.stringify({type: "loadEvent"}));
+        socketConnection.current.send(JSON.stringify({type: "loadEvent", content: 0}));
     }
 
     return (
