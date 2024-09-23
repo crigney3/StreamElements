@@ -20,6 +20,7 @@ const Character = ({
 
     // Dice vars
     let explosion = new Audio('/explosion.mp3');
+    let tokenSpend = new Audio('/tokenSpend.mp3');
     const [currentValue, setCurrentValue] = useState(1);
     const [isRolling, setIsRolling] = useState(false);
     const [isActive, setIsActive] = useState(false);
@@ -37,19 +38,12 @@ const Character = ({
     }, [tempCharInfo]);
 
     useEffect(() => {
-        console.log("Starting character with " + id);
+        console.log("Starting character with id of " + id);
         setTempCharInfo(allCharacterInfo);
     }, []);
 
     useEffect(() => {
-        // if (allCharacterInfo[id].rollDice === undefined) {
-        //     let tempChars = allCharacterInfo;
-
-        //     tempChars[id].rollDice = rollDie;
-    
-        //     setTempCharInfo(tempChars);
-        // } 
-
+        setCharTextSize(30);
         setCharText(allCharacterInfo[id].speakerText);
     }, [allCharacterInfo]);
 
@@ -71,7 +65,6 @@ const Character = ({
 
     const resize_to_fit = () => {
         setCharTextSize(charTextSize - 1);
-        console.log(charTextSize);
     }
 
     // Everything here and below is for rolling specifically, up until return
@@ -105,6 +98,25 @@ const Character = ({
     }
 
     const handleRollComplete = (diceKey, dieRollValue) => {
+        if((dieRollValue + allCharacterInfo[id].tokens) >= allCharacterInfo[id].dice[diceKey]) {
+            let i = 0;
+            let interval = setInterval(() => {
+                i++;
+                dieRollValue++;
+                setCurrentValue(dieRollValue);
+                allCharacterInfo[id].tokens--;
+                tokenSpend.play();
+                if(dieRollValue === allCharacterInfo[id].dice[diceKey]) {
+                    clearInterval(interval);
+                    checkForExplosion(diceKey, dieRollValue);
+                }
+            }, 1000);
+        } else {
+            checkForExplosion(diceKey, dieRollValue);
+        }
+    }
+
+    const checkForExplosion = (diceKey, dieRollValue) => {
         if(dieRollValue === allCharacterInfo[id].dice[diceKey]) {
             let tempChars = allCharacterInfo;
 
@@ -136,11 +148,6 @@ const Character = ({
             }, 4000);
             
         }
-
-        // setTimeout(() => {
-        //     setIsActive(false);
-        //     setCurrentValue(1);
-        // }, 10000);
     }
 
     return (

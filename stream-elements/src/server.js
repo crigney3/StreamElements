@@ -34,8 +34,9 @@ externalWebSocket.on('message', (e) => {
             }
         }
     });
+    let dataToSend = {type: 'contentchange', content: characterData};
 
-    if (isDirty) sendMessageToAllClients(characterData);
+    if (isDirty) sendMessageToAllClients(dataToSend);
 })
 
 // Back to server stuff
