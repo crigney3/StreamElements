@@ -1,0 +1,31 @@
+.ActiveRollBox {
+    display: grid;
+    align-items: center;
+    justify-content: center;
+}
+
+.RollBox {
+    width: 20%;
+    margin: 0px;
+    text-align: center;
+    color: black;
+    font-family: chemreA;
+    font-size: 20px;
+}
+
+.RollOutput {
+    margin: 0px;
+    grid-column: 1;
+    grid-row: 1;
+    width: 100%;
+    height: 40%;
+    align-self: center;
+}
+
+.DiceImage {
+    display: block;
+    grid-column: 1;
+    grid-row: 1;
+    width: 100%;
+    height: 100%;
+}
