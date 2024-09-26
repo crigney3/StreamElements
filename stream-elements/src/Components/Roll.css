@@ -2,6 +2,7 @@
     display: grid;
     align-items: center;
     justify-content: center;
+    background-color: rgba(0, 0, 0, 0);
 }
 
 .RollBox {
@@ -10,7 +11,8 @@
     text-align: center;
     color: black;
     font-family: chemreA;
-    font-size: 20px;
+    font-size: 60px;
+    background-color: rgba(0, 0, 0, 0);
 }
 
 .RollOutput {
@@ -18,7 +20,7 @@
     grid-column: 1;
     grid-row: 1;
     width: 100%;
-    height: 40%;
+    height: 10%;
     align-self: center;
 }
 

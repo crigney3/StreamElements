@@ -27,7 +27,15 @@ const Roll = ({
         if (rollResultKey !== "" && rollResultId === id) {
             rollDie(rollResultKey);
         }   
-    }, [rollResult])
+    }, [rollResult]);
+
+    useEffect(() => {
+        if(Object.keys(tempCharInfo).length !== 0) {
+            setAllCharacterInfo(state => ({
+                ...tempCharInfo
+            }));
+        }
+    }, [tempCharInfo]);
 
     const rollDie = (diceKey) => {
         console.log("Rolling die for character " + allCharacterInfo[id].name + " with skill: " + diceKey + " and maxValue: " + allCharacterInfo[id].dice[diceKey]);
@@ -59,7 +67,8 @@ const Roll = ({
     }
 
     const handleRollComplete = (diceKey, dieRollValue) => {
-        if((dieRollValue + allCharacterInfo[id].tokens) >= allCharacterInfo[id].dice[diceKey]) {
+        if((dieRollValue + allCharacterInfo[id].tokens) >= allCharacterInfo[id].dice[diceKey] &&
+           (dieRollValue) < allCharacterInfo[id].dice[diceKey]) {
             let i = 0;
             let interval = setInterval(() => {
                 i++;
@@ -102,12 +111,16 @@ const Roll = ({
 
             explosion.play();
             let interval = setInterval(() => {
-                console.log("exploded")
                 allCharacterInfo[id].rollDice(diceKey, id);
 
                 clearInterval(interval);
+            }, 4000); 
+        } else {
+            let interval = setInterval(() => {
+                setIsActive(false);
+                setIsRolling(false);
+                clearInterval(interval);
             }, 4000);
-            
         }
     }
 

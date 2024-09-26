@@ -100,11 +100,15 @@ function App() {
             let incomingData = JSON.parse(e.data);
             console.log(incomingData.type);
             if (incomingData.type === "contentchange" || incomingData.type === "userevent") {
+              // This is a very hacky fix but it'll do for now
               for (let i = 0; i < Object.keys(incomingData.content).length; i++) {
                 incomingData.content[i].rollDice = sendRollMessage;
               }
               setAllCharacters(incomingData.content);
             } else if(incomingData.type === "rollEvent") {
+              for (let i = 0; i < Object.keys(incomingData.content).length; i++) {
+                incomingData.content[i].rollDice = sendRollMessage;
+              }
               setServerDiceKey(incomingData.key);
               setServerRollResult(incomingData.content);
               setServerDiceCharacterId(incomingData.id);

@@ -2,6 +2,10 @@
 
 }
 
+.AdminPage {
+    background-color: #1e1e1e;
+}
+
 .CharacterGroups {
     display: flex;
     flex-direction: row;
