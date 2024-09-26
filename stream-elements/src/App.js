@@ -1,8 +1,10 @@
 import logo from './logo.svg';
 import './App.css';
 import { v4 as uuidv4 } from 'uuid';
-import { Route, Routes, Navigate } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
 import AdminPage from './Components/AdminPage';
+import Roll from './Components/Roll'
+import Character from './Components/Character';
 import TwitchControlContext from './Components/TwitchControlContext';
 import { useCallback, useState, useEffect, useRef } from 'react';
 // import useWebSocket, { ReadyState } from "react-use-websocket";
@@ -152,7 +154,17 @@ function App() {
     <div className="WholeApp">
         <div className="Routes">
         <TwitchControlContext.Provider value={{allCharacters, setAllCharacters, connection, serverRollResult, serverDiceKey, serverDiceCharacterId}}>
-          <AdminPage />
+          <Router>
+            <Routes>
+              <Route path='/admin' element={<AdminPage />}/>
+              <Route path='/Character1' element={<Character id={0} />}/>
+              <Route path='/Roll1' element={<Roll id={0} />}/>
+              <Route path='/Character2' element={<Character id={1} />}/>
+              <Route path='/Roll2' element={<Roll id={1} />}/>
+              <Route path='/Character3' element={<Character id={2} />}/>
+              <Route path='/Roll3' element={<Roll id={2} />}/>
+            </Routes>
+          </Router>    
         </TwitchControlContext.Provider>
         </div>
     </div>
